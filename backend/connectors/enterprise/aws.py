@@ -59,6 +59,14 @@ class AWSConnector(BaseConnector):
         try:
             session = self._get_session()
             
+            # Fetch account ID dynamically if unknown
+            if self.account_id == "unknown":
+                sts = session.client('sts')
+                caller = sts.get_caller_identity()
+                self.account_id = caller.get('Account')
+                if not self.account_id:
+                    raise ValueError("Failed to resolve AWS Account ID via STS.")
+                    
             # 1. Discover VPCs
             ec2 = session.client('ec2')
             vpcs = ec2.describe_vpcs().get('Vpcs', [])
@@ -125,10 +133,6 @@ class AWSConnector(BaseConnector):
                         attributes={"cloud_provider": "aws", "name": role_name}
                     ))
 
-            # Fetch account ID dynamically if unknown
-            if self.account_id == "unknown":
-                sts = session.client('sts')
-                self.account_id = sts.get_caller_identity().get('Account', 'unknown')
 
         except NoCredentialsError:
             errors.append("No AWS credentials found. Running in dry/unauthenticated mode.")

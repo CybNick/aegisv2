@@ -13,7 +13,7 @@ from backend.api.schemas.connectors import ConnectorCreateRequest
 
 router = APIRouter(dependencies=[Depends(require_admin)], prefix="/connectors", tags=["connectors"])
 
-@router.get("/")
+@router.get("")
 async def list_connectors(service: ConnectorServiceDep) -> dict[str, Any]:
     """List all registered connectors and their states."""
     data = service.list_connectors()
@@ -27,7 +27,7 @@ async def get_connector(instance_id: str, service: ConnectorServiceDep) -> dict[
         return error_response(error_code="NOT_FOUND", message=f"Connector '{instance_id}' not found")
     return success_response(data)
 
-@router.post("/")
+@router.post("")
 async def add_connector(
     req: ConnectorCreateRequest,
     service: ConnectorServiceDep

@@ -28,8 +28,9 @@ class StateManager:
             try:
                 data = json.loads(self._state_file.read_text(encoding="utf-8"))
                 return MonitoringState(**data)
-            except Exception:
-                pass
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).error(f"Failed to load monitoring state: {e}", exc_info=True)
         return MonitoringState()
 
     def _save(self):

@@ -52,5 +52,29 @@ def calculate_shortest_path(view: GraphView, source_id: str, target_id: str) -> 
 
 def get_all_attack_paths(view: GraphView, source_id: str, max_depth: int = 5) -> List[Dict[str, Any]]:
     """Find all paths from a source to highly exposed targets up to a depth."""
-    # Useful for finding generic attack paths from Internet to Critical Assets
-    pass
+    if source_id not in view.live_node_ids():
+        return []
+        
+    paths = []
+    queue = deque([(source_id, [source_id], [])])
+    
+    while queue:
+        curr_id, node_path, edge_path = queue.popleft()
+        
+        if len(node_path) > max_depth:
+            continue
+            
+        if len(node_path) > 1:
+            paths.append({
+                "source": source_id,
+                "target": curr_id,
+                "nodes": node_path,
+                "edges": edge_path,
+                "distance": len(edge_path)
+            })
+            
+        for edge in view.out_edges(curr_id):
+            if edge.dst not in node_path:  # Prevent cycles
+                queue.append((edge.dst, node_path + [edge.dst], edge_path + [edge.id]))
+                
+    return paths

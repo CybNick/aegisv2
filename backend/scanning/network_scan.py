@@ -70,8 +70,8 @@ class NetworkDiscoveryScanner:
         try:
             # Simple resolution to check if it exists
             ip = socket.gethostbyname(self.target)
-            if ip.startswith("127.") or ip == "0.0.0.0" or ip == "::1" or self.target.lower() == "localhost":
-                raise ValueError("Scanning localhost is prohibited (SSRF prevention)")
+            if ip.startswith("127.") or ip == "0.0.0.0" or ip == "::1" or self.target.lower() == "localhost" or ip.startswith("169.254."):
+                raise ValueError("Scanning localhost or cloud metadata services is prohibited (SSRF prevention)")
             
             asset = AssetObservation(
                 ref=AssetRef(ip=ip, hostname=self.target),
@@ -82,24 +82,34 @@ class NetworkDiscoveryScanner:
             observations.append(asset)
             
             # Scan common ports in parallel
-            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            executor = concurrent.futures.ThreadPoolExecutor(max_workers=10)
+            try:
                 future_to_port = {executor.submit(self._scan_port, ip, port): port for port in self.common_ports}
-                for future in concurrent.futures.as_completed(future_to_port):
-                    port = future_to_port[future]
-                    is_open = future.result()
-                    if is_open:
-                        observations.append(ServiceObservation(
-                            host=asset.ref,
-                            port=port,
-                            product_signature="unknown",
-                            source="NetworkDiscoveryScanner",
-                            evidence=(f"socket:connect:{port}",),
-                            observed_at=time.time(),
-                            metadata={"status": "open"}
-                        ))
+                try:
+                    for future in concurrent.futures.as_completed(future_to_port, timeout=10):
+                        port = future_to_port[future]
+                        try:
+                            is_open = future.result()
+                            if is_open:
+                                observations.append(ServiceObservation(
+                                    host=asset.ref,
+                                    port=port,
+                                    product_signature="unknown",
+                                    source="NetworkDiscoveryScanner",
+                                    evidence=(f"socket:connect:{port}",),
+                                    observed_at=time.time(),
+                                    metadata={"status": "open"}
+                                ))
+                        except Exception:
+                            pass
+                except concurrent.futures.TimeoutError:
+                    import logging
+                    logging.getLogger(__name__).warning(f"Scan timed out for {self.target}")
+            finally:
+                executor.shutdown(wait=False, cancel_futures=True)
         except Exception as e:
-            # If resolution fails or anything else, return what we have (likely empty)
-            pass
+            import logging
+            logging.getLogger(__name__).error(f"Discovery error on {self.target}: {e}")
             
         return observations
 

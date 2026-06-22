@@ -11,7 +11,7 @@ def _open_browser(url: str) -> None:
 
 def main() -> None:
     settings = get_settings()
-    url = f"http://{settings.host}:{settings.port}/dashboard"
+    url = f"http://{settings.host}:{settings.port}/"
     threading.Thread(target=_open_browser, args=(url,), daemon=True).start()
     
     uvicorn.run(

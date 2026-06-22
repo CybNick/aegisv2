@@ -29,8 +29,9 @@ class AlertEngine:
             try:
                 data = json.loads(self._alerts_file.read_text(encoding="utf-8"))
                 return [Alert(**a) for a in data]
-            except Exception:
-                pass
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).error(f"Failed to load alerts: {e}", exc_info=True)
         return []
 
     def _save(self):

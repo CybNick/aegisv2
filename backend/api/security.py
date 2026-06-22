@@ -58,12 +58,14 @@ def ensure_security_baseline():
     with open(config_path, "w") as f:
         json.dump(config, f, indent=2)
 
+    api_keys_path = get_settings().data_dir / "api_keys.txt"
+    with open(api_keys_path, "w") as f:
+        f.write("Authentication enabled. Generated API keys (will not be shown again):\n")
+        f.write(f"ADMIN: {admin_key}\n")
+        f.write(f"READONLY: {readonly_key}\n")
+
     log = __import__("logging").getLogger("aegis.security")
-    log.warning(
-        "Authentication enabled. Generated API keys (will not be shown again):\n"
-        f"ADMIN: {admin_key}\n"
-        f"READONLY: {readonly_key}\n"
-    )
+    log.info(f"Authentication enabled. Initial keys written securely to {api_keys_path}")
 
 def get_current_role(api_key_header: str = Security(api_key_header)) -> Role:
     """Validate API key and return Role.

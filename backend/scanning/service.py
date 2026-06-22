@@ -63,6 +63,7 @@ class ScanService:
             try:
                 with open(p, "r", encoding="utf-8") as f:
                     scans.append(ScanResult(**json.load(f)))
-            except Exception:
-                pass
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).error(f"Failed to load scan {p}: {e}", exc_info=True)
         return sorted(scans, key=lambda s: s.started_at or 0, reverse=True)

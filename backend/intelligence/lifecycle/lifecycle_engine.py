@@ -22,22 +22,36 @@ class LifecycleEngine:
             connected_nodes.add(e.src)
             connected_nodes.add(e.dst)
             
+        import time
+        now = time.time()
+        new_assets = []
+        dormant_assets = []
+        
         for nid in live_nodes:
+            state = self.curr_view.node_state(nid)
             props = self.curr_view.node_properties(nid)
             ntype = self.curr_view.node_type(nid)
             
-            # Simplified heuristic for "New": added in the last 10 events (or similar logic)
-            # We'll just list everything for now and categorize by connections
-            
-            if nid not in connected_nodes and ntype and ntype.value in ["DATASTORE", "ASSET"]:
+            if not ntype or ntype.value not in ["DATASTORE", "ASSET"]:
+                continue
+                
+            if nid not in connected_nodes:
                 orphaned_assets.append({"id": nid, "name": props.get("name", nid), "type": ntype.value})
+                
+            if state:
+                age = now - state.valid_from
+                if age < 86400:
+                    new_assets.append({"id": nid, "name": props.get("name", nid), "type": ntype.value})
+                elif age > 30 * 86400:
+                    dormant_assets.append({"id": nid, "name": props.get("name", nid), "type": ntype.value})
                 
         return {
             "summary": {
                 "total_assets": len(live_nodes),
                 "orphaned_count": len(orphaned_assets),
-                "dormant_count": 0
+                "dormant_count": len(dormant_assets)
             },
             "orphaned": orphaned_assets,
-            "new": [] # Normally derived from temporal sliding window
+            "new": new_assets,
+            "dormant": dormant_assets
         }

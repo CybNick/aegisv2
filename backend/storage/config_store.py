@@ -34,7 +34,9 @@ class ConfigStore:
             return {"connectors": []}
         try:
             return json.loads(self.config_json.read_text(encoding="utf-8"))
-        except Exception:
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).error(f"Failed to load config: {e}", exc_info=True)
             return {"connectors": []}
 
     def save_config(self, data: dict[str, Any]) -> None:
@@ -47,7 +49,9 @@ class ConfigStore:
             return {}
         try:
             return json.loads(self.state_json.read_text(encoding="utf-8"))
-        except Exception:
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).error(f"Failed to load state: {e}", exc_info=True)
             return {}
 
     def save_state(self, data: dict[str, Any]) -> None:
