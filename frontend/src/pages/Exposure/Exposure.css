@@ -1,0 +1,64 @@
+.exposure-page {
+  padding: 2rem;
+}
+
+.exposure-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.exposure-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.exposure-header {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid;
+  background-color: var(--bg-secondary);
+}
+
+.exposure-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.exposure-content {
+  padding: 1.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.exposure-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.exposure-list li {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.exposure-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.exposure-id {
+  font-family: monospace;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-all;
+}

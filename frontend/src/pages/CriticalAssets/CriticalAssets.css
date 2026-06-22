@@ -1,0 +1,30 @@
+.critical-assets-page {
+  padding: 2rem;
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.rank-badge.top-rank {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
+}
+
+tr.top-tier td {
+  background-color: rgba(239, 68, 68, 0.02);
+}
+
+tr.top-tier:hover td {
+  background-color: rgba(239, 68, 68, 0.05);
+}

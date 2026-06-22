@@ -1,0 +1,72 @@
+.attack-paths-page {
+  padding: 2rem;
+}
+
+.finder-inputs {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.finder-inputs .form-group {
+  flex: 1;
+}
+
+.path-visualization {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 2rem;
+  padding: 2rem;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.path-step {
+  display: flex;
+  gap: 1.5rem;
+  position: relative;
+  min-height: 80px;
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--bg-primary);
+  border: 2px solid var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+  z-index: 2;
+}
+
+.step-line {
+  position: absolute;
+  top: 40px;
+  bottom: 0;
+  left: 19px;
+  width: 2px;
+  background-color: var(--border-color);
+  z-index: 1;
+}
+
+.path-step:last-child .step-line {
+  display: none;
+}
+
+.step-content {
+  padding-top: 0.5rem;
+}
+
+.step-id {
+  font-family: monospace;
+  font-size: 1rem;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}

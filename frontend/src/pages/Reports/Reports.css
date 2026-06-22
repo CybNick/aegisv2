@@ -1,0 +1,52 @@
+.reports-page .report-controls {
+  margin-bottom: 24px;
+}
+
+.reports-page .form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.reports-page .form-group {
+  flex: 1;
+}
+
+.reports-page .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.reports-page .form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 4px;
+}
+
+.reports-page .actions-row {
+  display: flex;
+  gap: 12px;
+}
+
+.reports-page .text-preview {
+  background: var(--bg-input);
+  padding: 16px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.reports-page .html-preview {
+  background: white;
+  color: black;
+  padding: 16px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
